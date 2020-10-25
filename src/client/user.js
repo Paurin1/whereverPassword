@@ -1,0 +1,5 @@
+UserData = {
+    username: '',
+    pin: '',
+    password: ''
+}

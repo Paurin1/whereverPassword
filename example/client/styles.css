@@ -1,0 +1,86 @@
+body {
+    background-color: #888888;
+}
+
+.container {
+    background-color: #666666;
+
+    padding: 5px;
+}
+
+.element {
+    background-color: #999999;
+
+    border: solid 3px #995555;
+
+    padding: 5px;
+}
+
+.notification-disconnected {
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.notification-connected {
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.notification-connected #pin {
+    margin-top: 50;
+
+    position: relative;
+
+    font-size: 3vw;
+    width: 8vw;
+}
+
+.message {
+    margin-top: 50;
+
+    position: relative;
+
+    color: #FFFFFF;
+    font-size: 4.2vw;
+}
+
+.notification-details {
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.details {
+    margin-top: 50;
+
+    position: relative;
+
+    color: #FFFFFF;
+    font-size: 1.2vw;
+}
+
+.details table {
+    color: #fff;
+    font-size: 1.2vw;
+}
+
+.details table .nametag {
+    text-align: right;
+}
