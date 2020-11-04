@@ -97,7 +97,7 @@ async def connect(websocket, path):
         finally:
             print('Finished connection')
 
-def startServer(ip='127.0.0.1', port=65432):
+def startServer(ip='0.0.0.0', port=65432):
     asyncio.get_event_loop().run_until_complete(
         websockets.serve(connect, ip, port)
     )

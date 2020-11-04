@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 import json
+import pathlib
 import base64
 
 from pykeepass import PyKeePass
@@ -97,11 +98,15 @@ async def connect(websocket, path):
         finally:
             print('Finished connection')
 
-def startServer(ip='127.0.0.1', port=65432):
+def startServer(ip='0.0.0.0', port=65432):
     asyncio.get_event_loop().run_until_complete(
         websockets.serve(connect, ip, port)
     )
 
     asyncio.get_event_loop().run_forever()
 
-startServer()
+cfg = None
+with open('config.json', 'r') as fs:
+    cfg = json.load(fs)
+
+startServer(ip=cfg['ip'], port=cfg['port'])
