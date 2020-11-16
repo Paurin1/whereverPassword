@@ -1,111 +1,110 @@
 class Status {
-    static Disconnected = 0;
-    static Connected = 1;
-    static LoggedIn = 3;
+    static LoggedIn = 1;
+    static LoggedOut = 0;
+
+    static shouldLogout = false;
 }
 
-SocketClient = {
-    socket: null,
-    status: Status.Disconnected,
+HttpClient = {
+    request: null,
+    status: Status.LoggedOut,
 
-    connect: function() {
-        SocketClient.socket = new WebSocket("ws://127.0.0.1:65432");
+    connect: function(url) {
+        HttpClient.request = new XMLHttpRequest();
+        HttpClient.request.open('POST', 'http://127.0.0.1:65432' + url, true);
 
-        SocketClient.socket.onopen = onOpenEvent;
-        SocketClient.socket.onmessage = onMessageEvent;
-        SocketClient.socket.onclose = onCloseEvent;
-        SocketClient.socket.onerror = onErrorEvent;    
+        HttpClient.request.onreadystatechange = onMessageEvent;
+        HttpClient.request.addEventListener('error', onErrorEvent);
+        HttpClient.request.addEventListener('abort', onErrorEvent);
     },
 
-    send: function(text) {
-        console.log('>>> ' + text);
+    send: function(text, url) {
+        console.log('>>> [' + url + '] ' + text);
 
-        SocketClient.socket.send(text);
+        HttpClient.connect(url)
+        HttpClient.request.send(text); 
     },
 
-    login: function(pin) {
-        SocketClient.send(JSON.stringify({
-            'command': 'login',
+    login: function() {
+        HttpClient.send(JSON.stringify({
             'username': UserData.username,
-            'pin': pin
-        }));
+            'pin': UserData.pin
+        }), '/api/login');
     },
 
     list: function() {
-        if (SocketClient.status != Status.LoggedIn)
+        if (HttpClient.status != Status.LoggedIn)
             return;
 
-        SocketClient.send(JSON.stringify({
-            'command': 'list',
+        HttpClient.send(JSON.stringify({
             'username': UserData.username,
-            'password': UserData.password
-        }));
+            'password': UserData.password,
+            'pin': UserData.pin
+        }), '/api/list');
     },
 
     details: function(name) {
-        if (SocketClient.status != Status.LoggedIn)
+        if (HttpClient.status != Status.LoggedIn)
             return;
 
-        SocketClient.send(JSON.stringify({
-            'command': 'details',
+        HttpClient.send(JSON.stringify({
             'username': UserData.username,
             'password': UserData.password,
+            'pin': UserData.pin,
             'name': name
-        }));
+        }), '/api/details');
     }
-}
-
-function onOpenEvent(e) {
-    SocketClient.status = Status.Connected;
-    console.log('Connected');
 }
 
 function onMessageEvent(e) {
-    console.log('<<< ' + e.data);
+    if (HttpClient.request.readyState == 4 && HttpClient.request.status == 200)
+    {
+        try {
+            console.log('<<< ' + HttpClient.request.responseText);
 
-    try {
-        let data = JSON.parse(e.data);
-    
-        switch(data['type']) 
-        {
-            case 'loggedin':
-                SocketClient.status = Status.LoggedIn;
-                SocketClient.list();
-                break;
-    
-            case 'list':
-                for (let i = 0; i < data['list'].length; ++i) {
-                    GUI.addElement(
-                        data['list'][i]['name']
+            let data = JSON.parse(HttpClient.request.responseText);
+        
+            switch(data['type']) 
+            {
+                case 'login':
+                    Status.shouldLogout = false;
+
+                    if (data['status'] == 'ok')
+                        HttpClient.status = Status.LoggedIn;
+                    else
+                        HttpClient.status = Status.LoggedOut;
+                        
+                    break;
+
+                case 'list':
+                    GUI.clearList();
+
+                    for (let i = 0; i < data['list'].length; ++i) {
+                        GUI.addElement(
+                            data['list'][i]['name']
+                        );
+                    }
+                    break;
+        
+                case 'details':
+                    GUI.showDetails(
+                        data['data']['name'],
+                        data['data']['username'],
+                        window.atob(data['data']['password'])
                     );
-                }
-                break;
+                    break;
+        
+                default:
+                    break;
+            }
     
-            case 'details':
-                GUI.showDetails(
-                    data['data']['name'],
-                    data['data']['username'],
-                    window.atob(data['data']['password'])
-                );
-                break;
-    
-            default:
-                break;
+        } catch(e) {
+            console.log(e);
+            return;
         }
-
-    } catch(e) {
-        console.log(e);
-        return;
     }
 }
 
-function onCloseEvent(e) {
-    SocketClient.status = Status.Disconnected;
-    console.log('Disconnected');
-}
-
 function onErrorEvent(e) {
-    SocketClient.status = Status.Disconnected;
-    console.log('Dropped');
     console.log(e);
 }

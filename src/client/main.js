@@ -1,14 +1,36 @@
 let last_status = -1;
+let tick_count = 0;
 
 function loop() {
-    // this might cause problems when trying to reconnect by blocking the action from repeating
-    if (SocketClient.status == last_status)
-        return;
+    if (HttpClient.status != last_status) {
+        GUI.applyStatus();
 
-    GUI.applyStatus();
+        if (HttpClient.status == Status.LoggedIn) {
+            HttpClient.list();
+        } else {
+            GUI.hideDetails();
+            GUI.clearList();
+        }
 
-    if (SocketClient.status == Status.Disconnected)
-        SocketClient.connect();
+        last_status = HttpClient.status;
+    }
+
+    // validate PIN every 4 seconds
+    if (HttpClient.status == Status.LoggedIn && tick_count % 4 == 0) {
+        Status.shouldLogout = true;
+        
+        HttpClient.login();
+    }
+
+    // check if login request resolved in time (1 second)
+    if (Status.shouldLogout == true && tick_count % 4 == 1) {
+        HttpClient.status = Status.LoggedOut;
+
+        GUI.hideDetails();
+        GUI.clearList();
+    }
+
+    ++tick_count;
 }
 
 function copyToClipboard(id) {
@@ -21,30 +43,18 @@ function copyToClipboard(id) {
 
 GUI = {
     applyStatus: function() {
-        switch(SocketClient.status)
-        {
-            case Status.Disconnected:
-                document.getElementsByClassName('notification-disconnected')[0].style.visibility = 'visible';
-                document.getElementsByClassName('notification-connected')[0].style.visibility = 'hidden';
-                GUI.hideDetails();
-                GUI.clearList();
-                break;
-
-            case Status.Connected:
-                document.getElementsByClassName('notification-disconnected')[0].style.visibility = 'hidden';
-                document.getElementsByClassName('notification-connected')[0].style.visibility = 'visible';
-                GUI.hideDetails();
-                break;
-
-            case Status.LoggedIn:
-                document.getElementsByClassName('notification-disconnected')[0].style.visibility = 'hidden';
-                document.getElementsByClassName('notification-connected')[0].style.visibility = 'hidden';
-                break;
+        if (HttpClient.status == Status.LoggedIn) {
+            document.getElementsByClassName('notification-disconnected')[0].style.visibility = 'hidden';
+            document.getElementsByClassName('notification-connected')[0].style.visibility = 'hidden';
+        } else {
+            document.getElementsByClassName('notification-disconnected')[0].style.visibility = 'hidden';
+            document.getElementsByClassName('notification-connected')[0].style.visibility = 'visible';
+            GUI.hideDetails();
         }
     },
 
     requestDetails: function(caller) {
-        SocketClient.details(caller.innerHTML);
+        HttpClient.details(caller.innerHTML);
     },
 
     validatePIN: function() {
@@ -75,7 +85,8 @@ GUI = {
         }
     
         if (final.length == 4) {
-            SocketClient.login(final);
+            UserData.pin = final;
+            HttpClient.login();
         }
 
         pin_textbox.value = final;
@@ -115,4 +126,4 @@ GUI = {
     }
 }
 
-setInterval(loop, 250);
+setInterval(loop, 1000);
