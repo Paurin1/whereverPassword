@@ -38,7 +38,7 @@ HttpClient = {
 
         HttpClient.send(JSON.stringify({
             'username': UserData.username,
-            'password': UserData.password,
+            'password': UserData.encryption.encrypt(UserData.password),
             'pin': UserData.pin
         }), '/api/list');
     },
@@ -49,7 +49,7 @@ HttpClient = {
 
         HttpClient.send(JSON.stringify({
             'username': UserData.username,
-            'password': UserData.password,
+            'password': UserData.encryption.encrypt(UserData.password),
             'pin': UserData.pin,
             'name': name
         }), '/api/details');
@@ -69,7 +69,7 @@ function onMessageEvent(e) {
                 case 'login':
                     Status.shouldLogout = false;
 
-                    if (data['status'] == 'ok')
+                    if (data['status'] == 'ok') 
                         HttpClient.status = Status.LoggedIn;
                     else
                         HttpClient.status = Status.LoggedOut;
@@ -79,6 +79,8 @@ function onMessageEvent(e) {
                 case 'list':
                     GUI.clearList();
 
+                    data['list'] = JSON.parse(UserData.encryption.decrypt(data['list']));
+
                     for (let i = 0; i < data['list'].length; ++i) {
                         GUI.addElement(
                             data['list'][i]['name']
@@ -87,6 +89,8 @@ function onMessageEvent(e) {
                     break;
         
                 case 'details':
+                    data['data'] = JSON.parse(UserData.encryption.decrypt(data['data']));
+
                     GUI.showDetails(
                         data['data']['name'],
                         data['data']['username'],

@@ -1,3 +1,4 @@
 varia/*
 keepass/*
 *.key
+__pycache__/*

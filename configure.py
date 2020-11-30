@@ -100,6 +100,15 @@ def newpin(pin):
     with open('src/server/pins.json', 'w') as fs:
         json.dump(cfg, fs)
 
+if len(sys.argv) < 3:
+    error()
+
+import secrets
+import base64
+if sys.argv[1] == 'newkey':
+    print(base64.b64encode(secrets.token_bytes(int(sys.argv[2]))).decode('ascii'))
+    exit()
+
 if len(sys.argv) < 4:
     error()
 

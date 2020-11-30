@@ -2,12 +2,13 @@ import json
 import pathlib
 import base64
 
+import pyaes
 from pykeepass import PyKeePass
 from flask import Flask, request, Response
 
 # pin is not used for now
-def readKeePass(username, password, pin, name=None):
-    password = base64.b64decode(bytes(password, 'ascii'))
+def readKeePass(username, password, name=None):
+    password = base64.b64decode(password)
 
     # modified pykeepass.kdbx_parsing.common line 110
     kp = PyKeePass('{}.kdbx'.format(username), password=password)
@@ -37,8 +38,25 @@ def readKeePass(username, password, pin, name=None):
 def resp(text):
     resp = Response(text)
     resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Methods'] = 'POST'
     return resp
-    
+
+def encryptMessage(message: bytes, username):
+    with open('pins.json', 'r') as fs:
+        pins = json.load(fs)
+        for pin in pins:
+            if pin['username'] == username:
+                r = pyaes.Rijndael(pin['aes_key'])
+                return r.encrypt(message)
+
+def decryptMessage(message: bytes, username):
+    with open('pins.json', 'r') as fs:
+        pins = json.load(fs)
+        for pin in pins:
+            if pin['username'] == username:
+                r = pyaes.Rijndael(pin['aes_key'])
+                return r.decrypt(message)
+
 app = Flask(__name__)
 
 @app.route('/api/list', methods = ['POST'])
@@ -56,13 +74,12 @@ def computeMessage_list():
 
         l = readKeePass(
             m['username'],
-            m['password'],
-            m['pin']
+            decryptMessage(m['password'], m['username'])
         )
 
         return resp(json.dumps({
             'type': 'list',
-            'list': l
+            'list': encryptMessage(json.dumps(l), m['username'])
         }))
         
     except Exception as e:
@@ -86,14 +103,13 @@ def computeMessage_details():
 
         el = readKeePass(
             m['username'],
-            m['password'],
-            m['pin'],
+            decryptMessage(m['password'], m['username']),
             m['name']
         )
         
         return resp(json.dumps({
             'type': 'details',
-            'data': el
+            'data': encryptMessage(json.dumps(el), m['username'])
         }))
 
     except Exception as e:
@@ -139,4 +155,4 @@ cfg = None
 with open('config.json', 'r') as fs:
     cfg = json.load(fs)
 
-app.run(host=cfg['ip'], port=cfg['port'], debug=True)
+app.run(host=cfg['ip'], port=cfg['port'])
