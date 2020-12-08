@@ -11,7 +11,7 @@ HttpClient = {
 
     connect: function(url) {
         HttpClient.request = new XMLHttpRequest();
-        HttpClient.request.open('POST', 'http://127.0.0.1:65432' + url, true);
+        HttpClient.request.open('POST', 'http://whereverpassword.oa.r.appspot.com:65432' + url, true);
 
         HttpClient.request.onreadystatechange = onMessageEvent;
         HttpClient.request.addEventListener('error', onErrorEvent);
