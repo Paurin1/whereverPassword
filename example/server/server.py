@@ -59,6 +59,10 @@ def decryptMessage(message: bytes, username):
 
 app = Flask(__name__)
 
+@app.route('/', methods = ['GET'])
+def default():
+    return resp('Hello!')
+
 @app.route('/api/list', methods = ['POST'])
 def computeMessage_list():
     try:
