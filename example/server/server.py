@@ -1,38 +1,7 @@
 import json
-import pathlib
-import base64
+import passwordJSON
 
-from pykeepass import PyKeePass
 from flask import Flask, request, Response
-
-# pin is not used for now
-def readKeePass(username, password, pin, name=None):
-    password = base64.b64decode(bytes(password, 'ascii'))
-
-    # modified pykeepass.kdbx_parsing.common line 110
-    kp = PyKeePass('{}.kdbx'.format(username), password=password)
-    gr = kp.root_group
-
-    if name:
-        for entry in gr.entries:
-            if entry.title == name:
-                return {
-                    'name': entry.title,
-                    'username': entry.username,
-                    'password': base64.b64encode(entry.password.encode('utf-8')).decode('ascii'),
-                    'url': entry.url
-                }
-
-    else:
-        ret_list = []
-
-        for entry in gr.entries:
-            ret_list.append({
-                'name': entry.title,
-                'url': entry.url
-            })
-
-        return ret_list
 
 def resp(text):
     resp = Response(text)
@@ -46,6 +15,10 @@ def computeMessage_list():
     try:
         data = request.get_data()
 
+        # for backwards compatibility (i.e. Raspbian)
+        if type(data) is bytes:
+            data = data.decode('ascii')
+
         if len(data) == 0:
             return resp(json.dumps({
                 'type': 'error', 
@@ -54,10 +27,11 @@ def computeMessage_list():
 
         m = json.loads(data)
 
-        l = readKeePass(
+        print(m['password'])
+
+        l = passwordJSON.read(
             m['username'],
-            m['password'],
-            m['pin']
+            m['password']
         )
 
         return resp(json.dumps({
@@ -76,6 +50,10 @@ def computeMessage_details():
     try:
         data = request.get_data()
 
+        # for backwards compatibility (i.e. Raspbian)
+        if type(data) is bytes:
+            data = data.decode('ascii')
+
         if len(data) == 0:
             return resp(json.dumps({
                 'type': 'error', 
@@ -84,10 +62,9 @@ def computeMessage_details():
 
         m = json.loads(data)
 
-        el = readKeePass(
+        el = passwordJSON.read(
             m['username'],
             m['password'],
-            m['pin'],
             m['name']
         )
         
@@ -106,6 +83,10 @@ def computeMessage_details():
 def computeMessage_login():
     try:
         data = request.get_data()
+
+        # for backwards compatibility (i.e. Raspbian)
+        if type(data) is bytes:
+            data = data.decode('ascii')
 
         if len(data) == 0:
             return resp(json.dumps({
@@ -136,7 +117,7 @@ def computeMessage_login():
         }))
 
 cfg = None
-with open('config.json', 'r') as fs:
+with open('./config.json', 'r') as fs:
     cfg = json.load(fs)
 
 app.run(host=cfg['ip'], port=cfg['port'], debug=True)

@@ -1,112 +1,123 @@
-import asyncio
-import websockets
 import json
-import pathlib
-import base64
+import passwordJSON
 
-from pykeepass import PyKeePass
+from flask import Flask, request, Response
 
-async def readKeePass(username, password, name=None):
-    password = base64.b64decode(bytes(password, 'ascii'))
-
-    # modified pykeepass.kdbx_parsing.common line 110
-    kp = PyKeePass('{}.kdbx'.format(username), password=password)
-    gr = kp.root_group
-
-    if name:
-        for entry in gr.entries:
-            if entry.title == name:
-                return {
-                    'name': entry.title,
-                    'username': entry.username,
-                    'password': base64.b64encode(entry.password.encode('utf-8')).decode('ascii'),
-                    'url': entry.url
-                }
-
-    else:
-        ret_list = []
-
-        for entry in gr.entries:
-            ret_list.append({
-                'name': entry.title,
-                'url': entry.url
-            })
-
-        return ret_list
-
-async def computeMessage(websocket, message):
-    response = ''
+def resp(text):
+    resp = Response(text)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
     
+app = Flask(__name__)
+
+@app.route('/api/list', methods = ['POST'])
+def computeMessage_list():
     try:
-        m = json.loads(message)
+        data = request.get_data()
 
-        if m['command'] == 'list':
-            l = await readKeePass(
-                m['username'],
-                m['password']
-            )
+        # for backwards compatibility (i.e. Raspbian)
+        if type(data) is bytes:
+            data = data.decode('ascii')
 
-            response = json.dumps({
-                'type': 'list',
-                'list': l
-            })
+        if len(data) == 0:
+            return resp(json.dumps({
+                'type': 'error', 
+                'text': 'Received 0 bytes'
+            }))
 
-        elif m['command'] == 'details':
-            el = await readKeePass(
-                m['username'],
-                m['password'],
-                m['name']
-            )
-            
-            response = json.dumps({
-                'type': 'details',
-                'data': el
-            })
+        m = json.loads(data)
 
-        else:
-            response = json.dumps({'type': 'error', 'text': 'command not recognized'})
+        print(m['password'])
+
+        l = passwordJSON.read(
+            m['username'],
+            m['password']
+        )
+
+        return resp(json.dumps({
+            'type': 'list',
+            'list': l
+        }))
+        
+    except Exception as e:
+        return resp(json.dumps({
+            'type': 'error', 
+            'text': '{}'.format(e)
+        }))
+
+@app.route('/api/details', methods = ['POST'])
+def computeMessage_details():
+    try:
+        data = request.get_data()
+
+        # for backwards compatibility (i.e. Raspbian)
+        if type(data) is bytes:
+            data = data.decode('ascii')
+
+        if len(data) == 0:
+            return resp(json.dumps({
+                'type': 'error', 
+                'text': 'Received 0 bytes'
+            }))
+
+        m = json.loads(data)
+
+        el = passwordJSON.read(
+            m['username'],
+            m['password'],
+            m['name']
+        )
+        
+        return resp(json.dumps({
+            'type': 'details',
+            'data': el
+        }))
 
     except Exception as e:
-        response = json.dumps({'type': 'error', 'text': e})
+        return resp(json.dumps({
+            'type': 'error', 
+            'text': '{}'.format(e)
+        }))
 
-    await websocket.send(response)
+@app.route('/api/login', methods = ['POST'])
+def computeMessage_login():
+    try:
+        data = request.get_data()
 
-async def checkLogin(message):
-    message = json.loads(message)
+        # for backwards compatibility (i.e. Raspbian)
+        if type(data) is bytes:
+            data = data.decode('ascii')
 
-    with open('pins.json', 'r') as fs:
-        pins = json.load(fs)
-        for pin in pins:
-            if pin['username'] == message['username'] and pin['pin'] == message['pin']:
-                return True
-    return False
+        if len(data) == 0:
+            return resp(json.dumps({
+                'type': 'error', 
+                'text': 'Received 0 bytes'
+            }))
 
-async def connect(websocket, path):
-    print('New connection')
+        m = json.loads(data)
 
-    async for message in websocket:
-        try:
-            if await checkLogin(message) == False:
-                print('Invalid credentials')
-                return
-            else:
-                await websocket.send(json.dumps({'type': 'loggedin'}))
-            
-            async for message in websocket:
-                await computeMessage(websocket, message)
+        with open('pins.json', 'r') as fs:
+            pins = json.load(fs)
+            for pin in pins:
+                if pin['username'] == m['username'] and pin['pin'] == m['pin']:
+                    return resp(json.dumps({
+                        'type': 'login',
+                        'status': 'ok'
+                    }))
+                    
+        return resp(json.dumps({
+                'type': 'login',
+                'status': 'failed'
+            }))
 
-        finally:
-            print('Finished connection')
-
-def startServer(ip='0.0.0.0', port=65432):
-    asyncio.get_event_loop().run_until_complete(
-        websockets.serve(connect, ip, port)
-    )
-
-    asyncio.get_event_loop().run_forever()
+    except Exception as e:
+        return resp(json.dumps({
+            'type': 'error', 
+            'text': '{}'.format(e)
+        }))
 
 cfg = None
-with open('config.json', 'r') as fs:
+with open('./config.json', 'r') as fs:
     cfg = json.load(fs)
 
-startServer(ip=cfg['ip'], port=cfg['port'])
+app.run(host=cfg['ip'], port=cfg['port'], debug=True)
