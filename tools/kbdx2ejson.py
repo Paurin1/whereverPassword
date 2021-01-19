@@ -3,6 +3,7 @@ import json
 import pyaes
 import sys
 import keygen
+from hashlib import md5
 from os import path
 
 from pykeepass import PyKeePass
@@ -29,7 +30,7 @@ for entry in kp.entries:
     })
 
 if len(args) == 4:
-    aes = pyaes.Rijndael(base64.b64decode(args[3]))
+    aes = pyaes.Rijndael(bytes.fromhex(args[3]))
 else:
     key = keygen.get_b64()
     aes = pyaes.Rijndael(base64.b64decode(key))
@@ -37,5 +38,5 @@ else:
 
 ret_file = aes.encrypt(json.dumps(entries))
 
-with open(args[1].replace('kdbx', 'ejson'), 'wb') as fs:
+with open('{}.ejson'.format(md5(bytes.fromhex(args[3])).hexdigest()), 'wb') as fs:
     fs.write(ret_file)

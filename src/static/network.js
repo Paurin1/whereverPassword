@@ -50,6 +50,7 @@ function onMessageEvent(e) {
                 case 'credentials':
                     if (data['status'] == 'ok') {
                         GUI.hideKey();
+                        HttpClient.list();
                     } else {
                         GUI.enterKey();
                     }
