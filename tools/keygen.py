@@ -5,7 +5,10 @@ def get_bytes():
     return token_bytes(32)
 
 def get_b64():
-    return b64encode(token_bytes(32)).decode('ascii')
+    return b64encode(token_bytes(16)).decode('ascii')
 
 if __name__ == '__main__':
-    print(b64encode(token_bytes(32)).decode('ascii'))
+    tb = token_bytes(16)
+    print(b64encode(tb).decode('ascii'))
+    print(tb.hex())
+    print(tb.hex().upper())

@@ -2,7 +2,7 @@ import base64
 import json
 import pyaes
 
-def read(username, password, name=None):
+def read(fn, key, name=None):
     """
         Takes username (filename), password, custom PIN or entry name as input and returns list of passwords or entry info.
 
@@ -33,11 +33,11 @@ def read(username, password, name=None):
                 ]
     """
     # initialize decode
-    aes = pyaes.Rijndael(base64.b64decode(bytes(password, 'ascii')))
+    aes = pyaes.Rijndael(bytes.fromhex(key))
 
     # read password file
     passes = None
-    with open('{}.ejson'.format(username), 'rb') as fs:
+    with open('{}.ejson'.format(fn), 'rb') as fs:
         encrypted_file_bytes = fs.read()
         file_text = aes.decrypt(encrypted_file_bytes)
         try:
