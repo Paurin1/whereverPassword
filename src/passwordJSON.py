@@ -37,7 +37,7 @@ def read(fn, key, name=None):
 
     # read password file
     passes = None
-    with open('{}.ejson'.format(fn), 'rb') as fs:
+    with open('users/{}.ejson'.format(fn), 'rb') as fs:
         encrypted_file_bytes = fs.read()
         file_text = aes.decrypt(encrypted_file_bytes)
         try:
