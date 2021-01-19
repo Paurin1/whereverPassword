@@ -46,7 +46,7 @@ GUI = {
         elem.innerHTML = `${name} [${url}]`;
         elem.addEventListener('click', GUI.requestDetails);
 
-        document.getElementById('entryContainer').addElement(elem);
+        document.getElementById('entryContainer').appendChild(elem);
     },
 
     clearList: function() {
