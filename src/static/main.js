@@ -109,4 +109,5 @@ if (typeof Cookies.get('key') === 'undefined') {
     GUI.enterKey();
 } else {
     GUI.hideKey();
+    HttpClient.list();
 }

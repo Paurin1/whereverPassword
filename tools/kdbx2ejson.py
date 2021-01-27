@@ -8,6 +8,7 @@ from os import path
 
 from pykeepass import PyKeePass
 
+# python kbdx2ejson.py [kbdx file] [key file / password] [hex key]
 args = sys.argv
 
 # check if its a keyfile or password
