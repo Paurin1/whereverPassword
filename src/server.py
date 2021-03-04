@@ -31,6 +31,11 @@ def checkKey(k):
 def index():
     return render_template('index.html')
 
+# /jsrsa.js
+@app.route('/jsrsa.js')
+def jsrsa():
+    return render_template('jsrsa.js', rsa_key_n='nnn', rsa_key_e='eee')
+
 # /api
 @app.route('/api/list', methods = ['POST'])
 def computeMessage_list():

@@ -1,4 +1,7 @@
 Register = {
+    // number of days that cookie is stored
+    cookie_expiration: 7,
+
     textboxes: [
         document.getElementById('g1'),
         document.getElementById('g2'),
@@ -85,9 +88,16 @@ Register = {
         }
     },
 
+    setKeyCookie: function() {
+        let key = Register.getKey();
+        let enc_key = encryptRSA(key);
+
+        Cookies.set('key', enc_key, { expires: Register.cookie_expiration });
+        Cookies.set('rsa', pk_n, { expires: Register.cookie_expiration });
+    },
+
     apply: function() {
-        let k = Register.getKey();
-        Cookies.set('key', k);
+        Register.setKeyCookie();
         HttpClient.credentials();
     },
 
