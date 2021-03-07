@@ -1,19 +1,28 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>WhereverPassword</title>
 
+        <!-- Spreadsheets -->
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}" />
         
+        <!-- Static javascript files -->
+        <script type='text/javascript' src="{{ url_for('static', filename='BigInteger.min.js') }}"></script>
         <script type='text/javascript' src="{{ url_for('static', filename='cookie.min.js') }}"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='aes.js') }}"></script>
         <script type='text/javascript' src="{{ url_for('static', filename='network.js') }}"></script>
-        <script type='text/javascript' src="{{ url_for('static', filename='network.js') }}"></script>
-        <script type='text/javascript' src="jsrsa.js"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='register.js') }}"></script>
+
+        <!-- Template javascript file -->
+        <script type='text/javascript' src="rsa.js"></script>
     </head>
     <body>
+        <!-- Container for passwords list -->
         <div id='entryContainer' class='container'></div>
 
         <div id='curtain'></div>
+
         <div id='details'>
             <div class='nameBox'><p class='tag'>Name:</p><p id='entryName'></p></div>
             <div class='urlBox'><p class='tag'>URL:</p><a href='#' id='entryURL'></a></div>
@@ -39,7 +48,7 @@
             </div>
         </div>
 
-        <script type='text/javascript' src="{{ url_for('static', filename='register.js') }}"></script>
+        <!-- Static script that runs after webpage is loaded -->
         <script type='text/javascript' src="{{ url_for('static', filename='main.js') }}"></script>
     </body>
 </html>

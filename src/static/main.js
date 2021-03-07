@@ -93,21 +93,32 @@ GUI = {
     }
 }
 
-
 // set event handlers
 document.getElementById('entryUsername').addEventListener('click', GUI.copyUsername);
 document.getElementById('entryPassword').addEventListener('click', GUI.copyPassword);
 document.getElementById('curtain').addEventListener('click', GUI.curtainClick);
+for (let i = 0; i < 8; ++i) {
+    Register.textboxes[i].addEventListener('input', Register.onChange);
+    Register.textboxes[i].addEventListener('keyup', Register.onKeyUp);
+}
 
 // initials
 GUI.clearList();
 GUI.hideDetails();
 
-// check if key is saved in cookies
-if (typeof Cookies.get('key') === 'undefined') {
+// create AES-key for communication
+Register.generateAesKey();
+
+// check if any cookie is missing
+if (typeof Cookies.get('key') === 'undefined' || typeof Cookies.get('rsa') === 'undefined') {
     // display key textboxes
     GUI.enterKey();
 } else {
-    GUI.hideKey();
-    HttpClient.list();
+    // check if RSA key is the same as the one from server
+    if (Cookies.get('rsa') == RSA.pk_n) {
+        GUI.hideKey();
+        HttpClient.list();
+    } else {
+        GUI.enterKey();
+    }
 }

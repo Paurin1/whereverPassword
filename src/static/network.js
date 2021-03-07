@@ -19,7 +19,8 @@ HttpClient = {
 
     list: function() {
         HttpClient.send(JSON.stringify({
-            'key': Cookies.get('key')
+            'key': Cookies.get('key'),
+            'aes': Register.session_key_enc
         }), 'api/list');
     },
 
@@ -32,6 +33,7 @@ HttpClient = {
     details: function(name) {
         HttpClient.send(JSON.stringify({
             'key': Cookies.get('key'),
+            'aes': Register.session_key_enc,
             'name': name
         }), 'api/details');
     }
@@ -59,6 +61,11 @@ function onMessageEvent(e) {
                 case 'list':
                     GUI.clearList();
 
+                    // decrypt recv data
+                    aes = new AES.init(AES.utils.hex.toBytes(Register.session_key))
+                    data['list'] = AES.utils.utf8.fromBytes(aes.decryptData(AES.utils.hex.toBytes(data['list'])));
+                    data['list'] = JSON.parse(data['list']);
+
                     for (let i = 0; i < data['list'].length; ++i) {
                         GUI.addElement(
                             data['list'][i]['name']
@@ -67,6 +74,11 @@ function onMessageEvent(e) {
                     break;
         
                 case 'details':
+                    // decrypt recv data
+                    aes = new AES.init(AES.utils.hex.toBytes(Register.session_key))
+                    data['data'] = AES.utils.utf8.fromBytes(aes.decryptData(AES.utils.hex.toBytes(data['data'])));
+                    data['data'] = JSON.parse(data['data']);
+
                     GUI.showDetails(
                         data['data']['name'],
                         data['data']['username'],

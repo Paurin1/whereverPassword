@@ -13,6 +13,14 @@ Register = {
         document.getElementById('g8')
     ],
 
+    generateAesKey() {
+        Register.session_key = AES.utils.hex.fromBytes(window.crypto.getRandomValues(new Uint8Array(16)))
+        Register.session_key_enc = RSA.encrypt(Register.session_key);
+        
+        console.log(Register.session_key);
+        console.log(Register.session_key_enc);
+    },
+
     getKey: function() {
         let alnum = '';
         for (let i = 0; i < 8; ++i) {
@@ -90,10 +98,10 @@ Register = {
 
     setKeyCookie: function() {
         let key = Register.getKey();
-        let enc_key = encryptRSA(key);
+        let enc_key = RSA.encrypt(key);
 
         Cookies.set('key', enc_key, { expires: Register.cookie_expiration });
-        Cookies.set('rsa', pk_n, { expires: Register.cookie_expiration });
+        Cookies.set('rsa', RSA.pk_n, { expires: Register.cookie_expiration });
     },
 
     apply: function() {
@@ -106,9 +114,4 @@ Register = {
             Register.textboxes[i].value = '';
         }
     }
-}
-
-for (let i = 0; i < 8; ++i) {
-    Register.textboxes[i].addEventListener('input', Register.onChange);
-    Register.textboxes[i].addEventListener('keyup', Register.onKeyUp);
 }

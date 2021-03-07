@@ -33,7 +33,7 @@ def read(fn, key, name=None):
                 ]
     """
     # initialize decode
-    aes = pyaes.Rijndael(bytes.fromhex(key))
+    aes = pyaes.Rijndael(key)
 
     # read password file
     passes = None
