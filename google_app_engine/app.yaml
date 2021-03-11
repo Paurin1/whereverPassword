@@ -12,6 +12,6 @@ handlers:
 - url: /.*
   script: auto
 
-#network:
-#  forwarded_ports:
-#    - 55555/tcp
+network:
+  forwarded_ports:
+    - 65432/tcp
