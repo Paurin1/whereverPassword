@@ -1,0 +1,85 @@
+body {
+    background-color: #888888;
+}
+
+.container {
+    width: 35vw;
+    max-height: 80vh;
+    overflow: auto;
+
+    margin-left: auto;
+    margin-right: auto;
+    padding: .75em;
+
+    background-color: #ad2e2e;
+}
+
+.entry {
+    background-color: #cecb3a;
+
+    border-radius: 0.5em;
+    padding: .75em;
+    padding-left: 3em;
+    padding-right: 3em;
+    margin-top: .75em;
+    margin-bottom: .75em;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+.entry:hover {
+    background-color: #a5a32d;
+}
+
+#curtain {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#details {
+    position: absolute;
+    width: 25vw;
+
+    border-radius: 3em;
+    padding: 2em;
+    top: 15vh;
+    left: 50%;
+    margin-left: -12.5vw;
+
+    background-color: rgb(101, 86, 143);
+}
+
+.nameBox, .urlBox, .usernameBox, .passwordBox {
+    display: flex;
+}
+
+#entryName, #entryURL, #entryUsername, #entryPassword {
+    margin: 4px;
+    margin-left: 0px;
+    padding: .75em;
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+
+    text-align: left;
+
+    background-color: rgb(173, 255, 80);
+}
+
+.tag {
+    width: 6em;
+
+    margin: 4px;
+    margin-right: 0px;
+    padding: .75em;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+
+    text-align: right;
+
+    background-color: coral;
+}

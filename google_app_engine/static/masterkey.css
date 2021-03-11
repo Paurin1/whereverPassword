@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins');
 
-.registerWrapper {
+.masterKeyWrapper {
     font-family: "Poppins", sans-serif;
     position: absolute;
     display: flex;
@@ -13,7 +13,7 @@
     background-color: rgba(0, 0, 0, 0.486);
 }
 
-.registerWrapper #formContent {
+.masterKeyWrapper #formContent {
     border-radius: 10px 10px 10px 10px;
     background: #fff;
     padding: 30px;
@@ -23,7 +23,7 @@
     text-align: center;
 }
 
-.registerWrapper h2 {
+.masterKeyWrapper h2 {
     text-align: center;
     font-size: 16px;
     font-weight: 600;
@@ -34,7 +34,7 @@
 }
 
 /* FORM TYPOGRAPHY*/
-.registerWrapper form {
+.masterKeyWrapper form {
     display: flex;
     flex-direction: row;
 
@@ -44,7 +44,7 @@
     margin-right: 1.5em;
 }
 
-.registerWrapper input[type=text] {
+.masterKeyWrapper input[type=text] {
     background-color: #cdc4ff;
     border: none;
     color: #0d0d0d;
@@ -60,21 +60,21 @@
     border-radius: 5px 5px 5px 5px;
 }
 
-.registerWrapper input[type=text]:focus {
+.masterKeyWrapper input[type=text]:focus {
     background-color: #fff;
     border-bottom: 2px solid #5fbae9;
 }
 
-.registerWrapper input[type=text]:placeholder {
+.masterKeyWrapper input[type=text]:placeholder {
     color: #cccccc;
 }
 
 /* OTHERS */
 
-.registerWrapper *:focus {
+.masterKeyWrapper *:focus {
     outline: none;
 }
 
-.registerWrapper * {
+.masterKeyWrapper * {
     box-sizing: border-box;
 }

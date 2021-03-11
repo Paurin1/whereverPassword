@@ -143,5 +143,4 @@ def api_checkCredentials():
             'text': '{}'.format(e)
         })
 
-if __name__ == '__main__':
-    app.run(host=_IP, port=_PORT)
+app.run(host=_IP, port=_PORT)

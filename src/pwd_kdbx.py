@@ -1,36 +1,10 @@
 import base64
 from pykeepass import PyKeePass
 
+'''
+    This function is not yet implemented properly.
+'''
 def read(username, password, name=None):
-    """
-        Takes username (filename), password, custom PIN or entry name as input and returns list of passwords or entry info.
-
-        Arguments:
-            username : str
-                represents keepass file name: username.kdbx
-            password : b64_str
-                password bytes encoded in base64
-            name : str, optional
-                entry name
-
-        Returns:
-            name != None
-                {
-                    name : str,
-                    username: str,
-                    password: b64_str (utf-8 password),
-                    url: str
-                }
-
-            name == None
-                [
-                    {
-                        name : str, 
-                        url : str
-                    }, 
-                    ...
-                ]
-    """
     # decode password bytes
     password = base64.b64decode(bytes(password, 'ascii'))
 
