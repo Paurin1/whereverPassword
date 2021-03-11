@@ -7,6 +7,7 @@ import pyaes
 import pwd_ejson as pwds
 # import pwd_kdbx as pwds
 
+from keygen import hashKey
 from os.path import exists
 from hashlib import md5
 from flask import Flask, request, render_template
@@ -14,9 +15,6 @@ from flask import Flask, request, render_template
 # config
 _IP = '0.0.0.0'
 _PORT = 65432
-
-def hashKey(k : bytes) -> str:
-    return md5(k).hexdigest()
 
 def checkKey(k):
     return exists('users/{}.ejson'.format(hashKey(k)))
@@ -143,4 +141,5 @@ def api_checkCredentials():
             'text': '{}'.format(e)
         })
 
-app.run(host=_IP, port=_PORT)
+if __name__ == '__main__':
+    app.run(host=_IP, port=_PORT)
