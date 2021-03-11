@@ -142,4 +142,5 @@ def api_checkCredentials():
         })
 
 if __name__ == '__main__':
+    print('Running app at port {}'.format(_PORT))
     app.run(host=_IP, port=_PORT)
