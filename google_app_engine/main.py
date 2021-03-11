@@ -14,7 +14,7 @@ from flask import Flask, request, render_template
 
 # config
 _IP = '0.0.0.0'
-_PORT = 65432
+_PORT = 8080
 
 def checkKey(k):
     return exists('users/{}.ejson'.format(hashKey(k)))
