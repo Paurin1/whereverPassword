@@ -17,6 +17,7 @@ def get_b64(size=16):
 
 def hashKey(key):
     rounds_count = 128 * key[0] + key[1]
+    rounds_count >>= 2
     for _ in range(rounds_count):
         key = md5(key).digest()
     return key.hex()
