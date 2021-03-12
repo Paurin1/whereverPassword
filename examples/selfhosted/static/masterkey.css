@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+
+.masterKeyWrapper {
+    font-family: "Poppins", sans-serif;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 98vh;
+    
+    background-color: rgba(0, 0, 0, 0.486);
+}
+
+.masterKeyWrapper #formContent {
+    border-radius: 10px 10px 10px 10px;
+    background: #fff;
+    padding: 30px;
+    position: relative;
+    padding: 0px;
+    box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.masterKeyWrapper h2 {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+    margin: 40px 8px 10px 8px;
+    color: #0d0d0d;
+}
+
+/* FORM TYPOGRAPHY*/
+.masterKeyWrapper form {
+    display: flex;
+    flex-direction: row;
+
+    margin-top: 1.4em;
+    margin-bottom: 1.4em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}
+
+.masterKeyWrapper input[type=text] {
+    background-color: #cdc4ff;
+    border: none;
+    color: #0d0d0d;
+    padding: 15px 0.5em;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px;
+    width: 5em;
+    border: 2px solid #f6f6f6;
+    border-radius: 5px 5px 5px 5px;
+}
+
+.masterKeyWrapper input[type=text]:focus {
+    background-color: #fff;
+    border-bottom: 2px solid #5fbae9;
+}
+
+.masterKeyWrapper input[type=text]:placeholder {
+    color: #cccccc;
+}
+
+/* OTHERS */
+
+.masterKeyWrapper *:focus {
+    outline: none;
+}
+
+.masterKeyWrapper * {
+    box-sizing: border-box;
+}

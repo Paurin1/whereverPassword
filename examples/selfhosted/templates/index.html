@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WhereverPassword</title>
+
+        <!-- Spreadsheets -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='masterkey.css') }}" />
+        
+        <!-- Static javascript files -->
+        <script type='text/javascript' src="{{ url_for('static', filename='BigInteger.min.js') }}"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='cookie.min.js') }}"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='aes.js') }}"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='network.js') }}"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='ui.js') }}"></script>
+
+        <!-- Template javascript file -->
+        <script type='text/javascript' src="rsa.js"></script>
+    </head>
+    <body>
+        <!-- Container for passwords list -->
+        <div id='entryContainer' class='container'></div>
+
+        <div id='curtain'></div>
+
+        <div id='details'>
+            <div class='nameBox'><p class='tag'>Name:</p><p id='entryName'></p></div>
+            <div class='urlBox'><p class='tag'>URL:</p><a target="_blank" rel="noopener noreferrer" href='#' id='entryURL'></a></div>
+            <div class='usernameBox'><p class='tag'>Username:</p><p id='entryUsername'></p></div>
+            <div class='passwordBox'><p class='tag'>Password:</p><p id='entryPassword'></p></div>
+            
+            <input style='display: none;' id='copyurl' value='' />
+            <input style='display: none;' id='copyusername' value='' />
+            <input style='display: none;' id='copypassword' value='' />
+        </div>
+
+        <div id='masterKeyWrapper' class="masterKeyWrapper">
+            <div id="formContent">
+                <form id='form' action='#' method='post'>
+                    <input type="text" id="g1" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g2" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g3" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g4" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g5" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g6" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g7" placeholder="X X X X" autocomplete="off">
+                    <input type="text" id="g8" placeholder="X X X X" autocomplete="off">
+                </form>
+            </div>
+        </div>
+
+        <!-- Static script that runs after webpage is loaded -->
+        <script type='text/javascript' src="{{ url_for('static', filename='masterkey.js') }}"></script>
+        <script type='text/javascript' src="{{ url_for('static', filename='main.js') }}"></script>
+    </body>
+</html>
