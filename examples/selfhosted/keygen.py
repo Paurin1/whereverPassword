@@ -1,6 +1,13 @@
 from base64 import b64encode
-from secrets import token_bytes
+# from secrets import token_bytes
 from hashlib import md5
+from random import randint
+
+def token_bytes(size):
+    ints = []
+    for _ in range(size):
+        ints.append(randint(0, 256))
+    return bytes(ints)
 
 def get_bytes(size=16):
     return token_bytes(size)
