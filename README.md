@@ -16,6 +16,7 @@
   * [Why only 128 bits?](#why-only-128-bits)
   * [Is Raspberry Pi suitable for hosting?](#is-raspberry-pi-suitable-for-hosting)
   * [How can I upload my passwords to Google Cloud?](#how-can-i-upload-my-passwords-to-google-cloud)
+  * [Is there a way for key entering to be more human-friendly?](#is-there-a-way-for-key-entering-to-be-more-human-friendly)
 * [Future improvements](#future-improvements)
 * [Third party](#third-party)
 
@@ -76,7 +77,7 @@ username@cloudshell:~ (your_project_name)$ gcloud app deploy
      * keep in mind that the password will remain in the clipboard!
 ## **Configuration**
 #### **Converting KeePass to \*.ejson**
-*ejson* is just a JSON-formatted text file encrypted with AES. `src/kdbx2ejson.py` is a script that can help you convert your KeePass file to **.ejson*. You can try it in an example:
+*ejson* is just a JSON-formatted text file encrypted with AES. [`src/kdbx2ejson.py`](https://github.com/Paurin1/whereverPassword/blob/master/src/kdbx2ejson.py) is a script that can help you convert your KeePass file to **.ejson*. You can try it in an example:
 ```
 > cd examples/parser
 > python kdbx2ejson.py example.kdbx somepassword12345 11110000111100001111000011110000
@@ -101,10 +102,10 @@ It should create a file named `f5cb390d3c2e53aa1469252fff1b5e1c.ejson`. **WP** u
  4. `*.ejson` file is placed into `users` directory. 
 
 #### **Server side**
- 1. Server always has its' RSA Public and Private keys loaded. RSA key size can be changed in `pyrsa.py`.
- 2. Public Key is sent to the client in [`rsa.js`](https://github.com/Paurin1/whereverPassword/blob/homeServer/src/templates/rsa.js) file.
+ 1. Server always has its' RSA Public and Private keys loaded. RSA key size can be changed in [`pyrsa.py`](https://github.com/Paurin1/whereverPassword/blob/master/src/pyrsa.py).
+ 2. Public Key is sent to the client in [`rsa.js`](https://github.com/Paurin1/whereverPassword/blob/master/src/templates/rsa.js) file.
  3. During `/api` requests the server decrypts sent keys with its Private Key.
- 4. When server responds to `/api/list` or `/api/details` it encrypts the response data with client's AES key.
+ 4. When server responds to [`/api/list`](https://github.com/Paurin1/whereverPassword/blob/master/src/server.py#L42) or [`/api/details`](https://github.com/Paurin1/whereverPassword/blob/master/src/server.py#L82) it encrypts the response data with client's AES key.
 
 #### **Client side**
 1. Requests `http://servername:serverport/` and downloads every neccesary file.
@@ -117,7 +118,7 @@ It should create a file named `f5cb390d3c2e53aa1469252fff1b5e1c.ejson`. **WP** u
 	- if any of above checks is `False` then acquire AES master key from the user.
 3. After entering the master key, the key is validated by `/api/checkCredentials`.
 4. If the key turns out to be correct, it is encrypted with server's Public Key and saved in a cookie file.
-5. Each time client makes a request to `/api/list` or `/api/details` the encrypted master key is sent with the encrypted version of client's AES key.
+5. Each time client makes a request to [`/api/list`](https://github.com/Paurin1/whereverPassword/blob/master/src/static/network.js#L20) or [`/api/details`](https://github.com/Paurin1/whereverPassword/blob/master/src/static/network.js#L33) the encrypted master key is sent with the encrypted version of client's AES key.
 ### **How does it hash keys?**
 ```python
 def hashKey(key):
@@ -152,13 +153,18 @@ You can, e.g.:
   username@cloudshell:~$ wget https://storage.cloud.google.com/your_project_name.appspot.com/key_hash.ejson
   ```
 
-## **Future improvements**
+  ### **Is there a way for key entering to be more human-friendly?**
+  I'm thinking about using some kind of pattern-unlock feature but I need to find a decent way of converting the pattern into a 128/192/256-bit key so that it does not lose it's strength.
+
+## **Future improvements** 
+(see [Issues](https://github.com/Paurin1/whereverPassword/issues))
  - Add checkbox to prevent from saving cookies
  - Allow passwords file updates
  - Improve frontend to be more appealing
  - Design different frontend for mobile devices
  - Allow 192/256-bit keys for AES
  - Experiment with different asymmetric encryptions, e.g. [ECC](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography).
+
 
 ## **Third party**
 * [pykeepass](https://github.com/libkeepass/pykeepass)
