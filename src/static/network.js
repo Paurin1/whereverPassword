@@ -69,7 +69,8 @@ function onMessageEvent(e) {
 
                 for (let i = 0; i < recv['list'].length; ++i) {
                     GUI.addElement(
-                        recv['list'][i]['name']
+                        recv['list'][i]['name'],
+                        recv['list'][i]['url']
                     );
                 }
                 break;

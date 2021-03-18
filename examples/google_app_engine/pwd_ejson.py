@@ -19,19 +19,12 @@ def read(fn, key, name=None):
             raise Exception("Invalid master key")
 
         if name:
-            for entry in passwords:
-                if entry['name'] == name:
-                    return {
-                        'name': name,
-                        'username': entry['username'],
-                        'password': entry['password'],
-                        'url': entry['url']
-                    }
+            return passwords[name]
 
         else:
             ret_list = []
 
-            for entry in passwords:
+            for entry in passwords.values():
                 ret_list.append({
                     'name': entry['name'],
                     'url': entry['url']

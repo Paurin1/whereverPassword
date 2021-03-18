@@ -85,17 +85,21 @@ username@cloudshell:~ (your_project_name)$ gcloud app deploy
 It should create a file named `f5cb390d3c2e53aa1469252fff1b5e1c.ejson`. **WP** uses hashed AES keys to create files' names. It allows to quickly check if the key is valid without trying to decrypt every file available.
 
 #### **Parsing passwords exported from Firefox**
-*This will be implemented soon...*
+Firefox exports passwords into `*.csv` file. Creating new or updating existing `*.ejson` file works in a similar way as in the previous example:
+```
+> cd examples/parser
+> python ffcsv2ejson.py [...].csv 11110000111100001111000011110000
+```
 
 ## **FAQ**
 ### **How does it work?**
 #### **\*.ejson file**
  1. Your passwords are stored in a JSON-formatted string looking like this:
  ```json
- [
-	 {"name": "...", "url": "...", "username": "...", "password": "..."},
-	 {"name": "...", "url": "...", "username": "...", "password": "..."}
-]
+ {
+	 "[name]": {"name": "...", "url": "...", "username": "...", "password": "..."},
+	 "[name]": {"name": "...", "url": "...", "username": "...", "password": "..."}
+ }
  ```
  2. This string is encrypted with your 128-bit master key using AES encryption.
  3. Encrypted bytes are saved into `[hashed key].ejson` file where *hashed key* is a hashed master key.

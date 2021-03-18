@@ -32,8 +32,8 @@ GUI = {
     },
 
     addElement: function(name, url) {
-        if (typeof url === 'undefined')
-            url = '-';
+        if (typeof url === 'undefined' || url == null)
+            url = '---';
 
         let elem = document.createElement('div');
         elem.id = name;

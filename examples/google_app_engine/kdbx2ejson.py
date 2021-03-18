@@ -21,14 +21,14 @@ else:
 kp = PyKeePass(args[1], keyfile=kf, password=pwd)
 
 # read all entries from this kdbx file
-entries = []
+entries = {}
 for entry in kp.entries:
-    entries.append({
+    entries[entry.title] = {
         'name': entry.title,
         'url': entry.url,
         'username': entry.username,
         'password': base64.b64encode(entry.password.encode('utf-8')).decode('ascii')
-    })
+    }
 
 # if a key was specified then use it
 if len(args) == 4:
