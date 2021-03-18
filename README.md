@@ -1,6 +1,6 @@
 # **WhereverPassword**
 
-**WP** is a simple Python/Flask app for hosting passwords sharing server. You can see the demo [here](https://whereverpassword.oa.r.appspot.com/). </br>The master key is set to `1111-1111-1111-1111-1111-1111-1111-1111`.
+**WP** is a simple Python/Flask app for hosting passwords sharing server. You can see the demo [here](https://whereverpassword.oa.r.appspot.com/). </br>The master key is set to `1111-0000-1111-0000-1111-0000-1111-0000`.
 
 ## **Table of contents**
 * [Quick start](#quick-start)
